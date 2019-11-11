@@ -14,7 +14,7 @@
         <li>
           <el-dropdown @command="exit">
             <span class="el-dropdown-link">
-              管理员
+              {{ userInfo[0].nickname }}
               <i class="el-icon-arrow-down"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
@@ -51,7 +51,8 @@ export default {
   name: "con",
   props: {
     navList: Array,
-    isCollapse: Boolean
+    isCollapse: Boolean,
+    userInfo: Array
   },
   data() {
     return {};
@@ -60,6 +61,8 @@ export default {
     exit(command){
       if(command == 'exit'){
         localStorage.token = ''
+        localStorage.userid = ''
+        localStorage.userInfo = ''
         this.$router.push("/login");
       }
     }

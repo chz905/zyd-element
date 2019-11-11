@@ -4,7 +4,7 @@
       <navigation :isCollapse="isCollapse" :router="router"/>
     </div>
     <div class="content">
-      <Content @click="open" :navList="navList" :isCollapse="isCollapse" />
+      <Content @click="open" :navList="navList" :isCollapse="isCollapse" :userInfo="userInfo"/>
     </div>
   </div>
 </template>
@@ -20,7 +20,7 @@ export default {
       router: [
         {
           text: "数据统计",
-          icon: "el-icon-location",
+          icon: "el-icon-data-line",
           path: "/policeStatistics",
           children:[
             {
@@ -35,7 +35,7 @@ export default {
         },
         {
           text: "车辆监控",
-          icon: "el-icon-location",
+          icon: "el-icon-cpu",
           path: "/carTracking",
           children:[
             {
@@ -50,7 +50,7 @@ export default {
         },
         {
           text: "车辆管理",
-          icon: "el-icon-location",
+          icon: "el-icon-truck",
           path: "/carmanagement",
           children:[
             {
@@ -61,7 +61,7 @@ export default {
         },
         {
           text: "围栏管理",
-          icon: "el-icon-location",
+          icon: "el-icon-full-screen",
           path: "/fencemanagement",
           children:[
             {
@@ -72,7 +72,7 @@ export default {
         },
         {
           text: "保险管理",
-          icon: "el-icon-location",
+          icon: "el-icon-document-remove",
           path: "/insurancePlan",
           children:[
             {
@@ -87,7 +87,7 @@ export default {
         },
         {
           text: "修车管理",
-          icon: "el-icon-location",
+          icon: "el-icon-bangzhu",
           path: "/storeManagement",
           children:[
             {
@@ -116,7 +116,8 @@ export default {
           ]
         }
       ],
-      navList: []
+      navList: [],
+      userInfo: ''
     };
   },
   components: {
@@ -125,6 +126,7 @@ export default {
   },
   created() {
     this.navList = this.$route.matched; //路由变化
+    this.userInfo = JSON.parse(localStorage.userInfo)
   },
   mounted() {
     this.monitorWindowSize();

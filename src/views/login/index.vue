@@ -7,12 +7,16 @@
       <div class="inputG">
         <div class="input">
           <el-input
-            placeholder="请输入账号"
+            placeholder="请输入手机号"
             prefix-icon="el-icon-user-solid"
             v-model="account"
             @blur="accountBlur"
-          ></el-input>
-          <span v-if="accountError" class="error">请输入正确的账号</span>
+          >
+            <template slot="append">
+              <el-button :disabled="code_dis" @click="getCode">{{ btnTitle }}</el-button>
+            </template>
+          </el-input>
+          <span v-if="accountError" class="error">账号不能为空</span>
         </div>
         <div class="input">
           <el-input
@@ -22,7 +26,7 @@
             show-password
             @blur="passwordBlur"
           ></el-input>
-          <span v-if="passwordError" class="error">密码错误</span>
+          <span v-if="passwordError" class="error">验证码不能为空</span>
         </div>
         <div class="land" :class="{active: disabled}">
           <el-button :loading="loading" @click="handlogin" :disabled="disabled">登陆</el-button>
@@ -33,10 +37,14 @@
 </template>
 
 <script>
+import { pcLogin, smsCode } from "@/utils/api";
 export default {
   name: "Login",
   data() {
     return {
+      btnTitle: "获取验证码",
+      verificativon: "", //验证码
+      code_dis: false,
       account: "",
       accountError: false,
       password: "",
@@ -46,26 +54,78 @@ export default {
   },
   created() {},
   methods: {
+    getCode() {
+      console.log("a");
+      let phones = { mobile: this.account };
+      if (!this.account) {
+        // this.accountError = true;
+        this.$message.error("手机号不能为空");
+      } else if (!/^1[3|5|7|8|][0-9]{9}$/.test(this.account)) {
+        this.$message.error("请输入正确的手机号");
+      } else {
+        this.validataBtn();
+        console.log(phones);
+        smsCode(phones).then(res => {
+          localStorage.setItem("verificativon", res.data.code);
+          console.log(res);
+        });
+      }
+    },
+    validataBtn() {
+      // console.log('a')
+      let time = 60;
+      let timer = setInterval(() => {
+        if (time == 0) {
+          clearInterval(timer);
+          this.btnTitle = "获取验证码";
+          this.code_dis = false;
+        } else {
+          this.btnTitle = time + "秒后重试";
+          this.code_dis = true;
+          time--;
+        }
+      }, 1000);
+    },
     accountBlur() {
-      if (this.account !== "admin") {
-        this.accountError = true;
+      if (this.account == "") {
+        // this.accountError = true;
+        this.$message.error("手机号不能为空");
       } else {
         this.accountError = false;
       }
     },
     passwordBlur() {
-      if (this.password !== "admin") {
-        this.passwordError = true;
+      if (this.password == "") {
+        this.$message.error("验证码不能为空");
+        // this.passwordError = true;
       } else {
         this.passwordError = false;
       }
     },
     handlogin() {
-      if (this.account == "admin" && this.password == "admin") {
-        localStorage.setItem("token", true);
-        this.loading = true;
-        this.$router.push({ name: "home" });
-      } else {
+      console.log(localStorage.verificativon);
+      if (!/^1[3|5|7|8|][0-9]{9}$/.test(this.account)) {
+        this.$message.error("请输入正确的手机号");
+        return;
+      } else if (this.password !== localStorage.verificativon) {
+        this.$message.error("验证码错误");
+        return;
+      } else if (this.password == localStorage.verificativon) {
+        let id = { mobile: this.account, smscode: this.password };
+        pcLogin(id).then(res => {
+          if (res.retCode == 1) {
+            localStorage.setItem("token", true);
+            localStorage.setItem("userid", res.data[0].id);
+            localStorage.setItem("userInfo", JSON.stringify(res.data));
+            this.loading = true;
+            this.$router.push({ name: "home" });
+          }
+          console.log(res);
+        });
+        // localStorage.setItem("token", true);
+        // localStorage.setItem("userid", 1);
+        // this.loading = true;
+        // this.$router.push({ name: "home" });
       }
     }
   },

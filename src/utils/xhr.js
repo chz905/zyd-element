@@ -1,10 +1,10 @@
 
 
 import axios from 'axios';
-import { Message } from 'iview';
+import { Message,Loading } from 'element-ui';
+import { showLoading, hideLoading } from './loading';
 //地址
-// axios.defaults.baseURL = 'https://backend.gps.zydrfid.com';
-// axios.defaults.baseURL = 'http://192.168.1.110:8080';
+// axios.defaults.baseURL = 'http://192.168.1.105:8080';
 //请求超时时间
 axios.defaults.timeout = 10000;
 //post请求头
@@ -12,6 +12,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 
 //请求拦截器
 axios.interceptors.request.use(config => {
+    // showLoading()
     if (localStorage.userid) {
         config.headers.userid = localStorage.getItem('userid')
     }
@@ -21,6 +22,7 @@ axios.interceptors.request.use(config => {
 })
 //响应拦截
 axios.interceptors.response.use(response => {
+    // hideLoading()
     return response
 }, error => {
     Indicator.close();

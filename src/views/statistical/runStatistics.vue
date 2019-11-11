@@ -32,7 +32,17 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-popover placement="top" trigger="hover">
+            <p>确定要删除吗？</p>
+            <div style="text-align: right; margin: 0">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleDelete(scope.$index, scope.row)"
+              >确定</el-button>
+            </div>
+            <el-button size="mini" slot="reference" type="danger" style="margin-left: 10px;">删除</el-button>
+          </el-popover>
         </template>
       </el-table-column>
     </el-table>

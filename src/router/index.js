@@ -17,6 +17,7 @@ const carTrajectory = () => import('../views/carmonitoring/carTrajectory.vue') /
 const carmanagement = () => import('../views/carmanagement') 
 //围栏管理
 const fencemanagement = () => import('../views/fencemanagement') 
+const fencemanagement1 = () => import('../views/fencemanagement/index - 副本.vue') 
 //保险管理  insurance
 const insurancePlan = () => import('../views/insurance/insurancePlan.vue') //保险套餐
 const carInsurance = () => import('../views/insurance/carInsurance.vue') //车辆保险
@@ -75,6 +76,12 @@ const routes = [
         path: '/fencemanagement',
         name: 'fencemanagement',
         component: fencemanagement,
+        meta: { name: '围栏管理' },
+      },
+      {
+        path: '/fencemanagement1',
+        name: 'fencemanagement1',
+        component: fencemanagement1,
         meta: { name: '围栏管理' },
       },
       {
